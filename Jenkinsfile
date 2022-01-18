@@ -12,8 +12,16 @@ pipeline {
    
                 }
             }
+	     stage('Nexus Push'){
+            steps{
+                withCredentials([string(credentialsId: 'dockercred', variable: 'dockercred')]) {
+                    sh "docker login -u aiyub -p ${dockercred}"
+                    sh "docker push aiyub/nodeapp:${DOCKER_TAG}"
+                }
+            }
         }
-    }
+     }
+}
 
 def getDockerTag(){
     def tag  = sh script: 'git rev-parse HEAD', returnStdout: true
